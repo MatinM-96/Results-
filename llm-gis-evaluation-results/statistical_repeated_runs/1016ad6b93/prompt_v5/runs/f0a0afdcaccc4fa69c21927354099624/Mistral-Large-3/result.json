@@ -1,0 +1,724 @@
+{
+  "run_id": "f0a0afdcaccc4fa69c21927354099624",
+  "query": "Find 10 buildings in Kristiansand municipality within 50 metres of 200-year storm-surge areas, sorted by shortest distance first, and report both municipality and county.",
+  "model_id": "Mistral-Large-3",
+  "provider": "openai",
+  "deployment": "Mistral-Large-3",
+  "runtime_model_name": "mistral-large-3",
+  "finish_reason": "tool_calls",
+  "prompt_name": "prompt_v5",
+  "config_id": "db9fa8f82c",
+  "config_path": "statistical_repeated_runs/1016ad6b93/prompt_v5/runs/f0a0afdcaccc4fa69c21927354099624/config.json",
+  "valid_sql": true,
+  "executed": true,
+  "task_completed": false,
+  "model_task_completed": false,
+  "final_failure_type": "replan_exhausted",
+  "final_failure_step": 2,
+  "iterations": 22,
+  "total_tool_calls": 26,
+  "latency_s": 74.569,
+  "tokens": {
+    "prompt_tokens": 363657,
+    "completion_tokens": 4013,
+    "total_tokens": 367670
+  },
+  "estimated_tokens": {
+    "prompt_tokens": 266588,
+    "completion_tokens": 4505,
+    "total_tokens": 271093
+  },
+  "retrieval": {
+    "scope_active": false,
+    "top_score": null,
+    "candidates": []
+  },
+  "plan_finalized": true,
+  "planned_steps": {
+    "1": {
+      "step": 1,
+      "action": "query",
+      "description": "get Kristiansand municipality geometry by kommunenummer to avoid name ambiguity",
+      "database": "kommuner"
+    },
+    "2": {
+      "step": 2,
+      "action": "query",
+      "description": "get 200-year storm-surge areas within Kristiansand municipality extent using spatial filter",
+      "database": "stormflohavniva"
+    },
+    "3": {
+      "step": 3,
+      "action": "query",
+      "description": "get buildings in Kristiansand municipality by kommunenummer",
+      "database": "matrikkelenbygning"
+    },
+    "4": {
+      "step": 4,
+      "action": "spatial_join",
+      "description": "find buildings within 50 metres of storm-surge areas",
+      "database": null
+    },
+    "5": {
+      "step": 5,
+      "action": "distance",
+      "description": "calculate distance from each building to the nearest storm-surge area",
+      "database": null
+    },
+    "6": {
+      "step": 6,
+      "action": "aggregate",
+      "description": "collapse to one row per building with minimum distance",
+      "database": null
+    },
+    "7": {
+      "step": 7,
+      "action": "sort",
+      "description": "sort buildings by distance ascending, then by building ID ascending for tie-breaker",
+      "database": null
+    },
+    "8": {
+      "step": 8,
+      "action": "limit",
+      "description": "limit to 10 buildings",
+      "database": null
+    },
+    "9": {
+      "step": 9,
+      "action": "attribute_join",
+      "description": "join municipality and county names for final reporting",
+      "database": null
+    }
+  },
+  "required_step_ids": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "result": null,
+  "guard_stats": {
+    "sql_repairs": {
+      "total": 5,
+      "by_step": {
+        "1": 1,
+        "2": 1
+      }
+    },
+    "step_retries": {
+      "total": 0,
+      "by_step": {}
+    },
+    "replans": 2,
+    "blocked_calls": 1,
+    "pre_plan_guard_blocks": 0,
+    "replan_events": [
+      {
+        "trigger": "blocked_step",
+        "step": 2,
+        "action": null,
+        "blocked_count": null,
+        "detail": "Step 2 exhausted SQL repair budget (2 attempts).",
+        "replan_index": 0
+      },
+      {
+        "trigger": "zero_rows_step",
+        "step": 2,
+        "action": null,
+        "blocked_count": null,
+        "detail": "Step 2 returned 0 rows before the plan was complete. Treat this as an empty intermediate result and revise the plan, filter, join, table choice, or predicate.",
+        "replan_index": 1
+      },
+      {
+        "trigger": "zero_rows_step",
+        "step": 2,
+        "action": null,
+        "blocked_count": null,
+        "detail": "Step 2 returned 0 rows before the plan was complete. Treat this as an empty intermediate result and revise the plan, filter, join, table choice, or predicate.",
+        "replan_index": 2
+      }
+    ],
+    "tool_shape_errors": {},
+    "unplanned_step_blocks": {},
+    "locked_step_blocks": {},
+    "missing_source_step": {}
+  },
+  "process": {
+    "total_step_errors": 8,
+    "discovery_calls": 10,
+    "redundant_steps": 0,
+    "db_count_used": 2
+  },
+  "errors": [
+    "{\"validated\": false, \"step_number\": 2, \"database\": \"stormflohavniva\", \"error\": \"relation \\\"step_1\\\" does not exist\"}",
+    "{\"validated\": false, \"step_number\": 2, \"database\": \"stormflohavniva\", \"error\": \"parse error - invalid geometry\\nHINT:  \\\"<M\\\" <-- parse error at position 2 within geometry\"}",
+    "{\"validated\": false, \"step_number\": 2, \"database\": \"stormflohavniva\", \"error\": \"parse error - invalid geometry\\nHINT:  \\\"SRID=25833;<M\\\" <-- parse error at position 13 within geometry\"}",
+    "{\"executed\": false, \"error\": \"tool_validate_sql blocked.\", \"reason\": \"Step 2 has exhausted its SQL repair budget (2 attempts). Produce a new plan.\", \"step\": 2, \"action\": \"query\"}",
+    "Stopped: replan budget (2) exhausted.",
+    "Not all planned steps executed successfully.",
+    "Step 2 (query) validated=True executed=True rows_returned=0 status=empty"
+  ],
+  "trace": {
+    "tables_explored": [
+      "administrativenhetnavn",
+      "grense",
+      "kommune",
+      "sprakkode",
+      "typeavgrensning",
+      "spatial_ref_sys",
+      "dekningsomrade",
+      "dekningstatus",
+      "malemetode",
+      "middelhoyvann_klimaar2100",
+      "middelhoyvann_klimaar2150",
+      "middelhoyvann_klimaarna",
+      "sikkerhetsklasseflom",
+      "stormflo1000ar_klimaar2100",
+      "stormflo1000ar_klimaarna",
+      "stormflo200ar_klimaar2100",
+      "stormflo200ar_klimaarna",
+      "stormflo20ar_klimaarna",
+      "stormfloovreestimat_klimaar2100",
+      "stormfloovreestimat_klimaar2150",
+      "stormfloovreestimat_klimaarna",
+      "bruksenhet",
+      "bygning",
+      "bygningsstatuskode",
+      "bygningstypekode",
+      "kommunenummer",
+      "naringsgruppekode",
+      "opprinnelseskode",
+      "sefrakident"
+    ],
+    "tables_in_result": [
+      "kommune",
+      "stormflo200ar_klimaarna",
+      "kommunenummer"
+    ],
+    "databases_explored": {
+      "kommuner": 4,
+      "stormflohavniva": 4,
+      "matrikkelenbygning": 2
+    },
+    "databases_in_result": [
+      "kommuner",
+      "stormflohavniva"
+    ],
+    "validated_before_exec": true,
+    "executed_successfully": true,
+    "total_tool_calls": 26,
+    "executions": [
+      {
+        "iteration": 19,
+        "step": "1",
+        "action": "query",
+        "database": "kommuner",
+        "sql": "SELECT kommunenummer, kommunenavn, omrade AS geom FROM kommuner_627ee106072240e99d2b21ec4717bf01.kommune WHERE kommunenummer = '4204';",
+        "success": true,
+        "error": null,
+        "rows_returned": 1,
+        "status": "ok"
+      },
+      {
+        "iteration": 22,
+        "step": "2",
+        "action": "query",
+        "database": "stormflohavniva",
+        "sql": "SELECT omrade AS geom FROM stormflohavniva_bd7c84ed67254396b81e18b48ee0f525.stormflo200ar_klimaarna WHERE ST_Intersects(omrade, ST_GeomFromText('POLYGON((430000 6430000, 430000 6480000, 480000 6480000, 480000 6430000, 430000 6430000))', 25833));",
+        "success": true,
+        "error": null,
+        "rows_returned": 0,
+        "status": "empty"
+      }
+    ],
+    "tool_call_counts": {
+      "tool_get_database_catalog": 4,
+      "tool_get_table_schema": 6,
+      "tool_validate_sql": 11,
+      "tool_execute_query_step": 5
+    }
+  },
+  "failed_step_summary": {
+    "step": 2,
+    "action": "query",
+    "status": "empty",
+    "database": "stormflohavniva",
+    "sql": "SELECT omrade AS geom FROM stormflohavniva_bd7c84ed67254396b81e18b48ee0f525.stormflo200ar_klimaarna WHERE ST_Intersects(omrade, ST_GeomFromText('POLYGON((430000 6430000, 430000 6480000, 480000 6480000, 480000 6430000, 430000 6430000))', 25833));",
+    "error": "{\"validated\": false, \"step_number\": 2, \"database\": \"stormflohavniva\", \"error\": \"relation \\\"step_1\\\" does not exist\"}",
+    "sql_repairs": 1,
+    "step_retries": 0,
+    "recovered": false
+  },
+  "active_step_issues": [
+    {
+      "step": 2,
+      "action": "query",
+      "status": "empty",
+      "database": "stormflohavniva",
+      "sql": "SELECT omrade AS geom FROM stormflohavniva_bd7c84ed67254396b81e18b48ee0f525.stormflo200ar_klimaarna WHERE ST_Intersects(omrade, ST_GeomFromText('POLYGON((430000 6430000, 430000 6480000, 480000 6480000, 480000 6430000, 430000 6430000))', 25833));",
+      "error": "{\"validated\": false, \"step_number\": 2, \"database\": \"stormflohavniva\", \"error\": \"relation \\\"step_1\\\" does not exist\"}",
+      "sql_repairs": 1,
+      "step_retries": 0,
+      "recovered": false
+    }
+  ],
+  "recovered_step_issues": [
+    {
+      "step": 1,
+      "action": "query",
+      "status": "ok",
+      "database": "kommuner",
+      "sql": "SELECT kommunenummer, kommunenavn, omrade AS geom FROM kommuner_627ee106072240e99d2b21ec4717bf01.kommune WHERE kommunenummer = '4204';",
+      "error": "{\"validated\": false, \"step_number\": 1, \"database\": \"kommuner\", \"error\": \"column \\\"fylkesnummer\\\" does not exist\"}",
+      "sql_repairs": 1,
+      "step_retries": 0,
+      "recovered": true
+    }
+  ],
+  "step_outcomes": [
+    {
+      "step": "1",
+      "action": "query",
+      "validated": true,
+      "executed": true,
+      "rows_returned": 1,
+      "status": "ok"
+    },
+    {
+      "step": "2",
+      "action": "query",
+      "validated": true,
+      "executed": true,
+      "rows_returned": 0,
+      "status": "empty"
+    }
+  ],
+  "per_iteration_latency_s": [
+    {
+      "run_index": 0,
+      "iteration": 1,
+      "model_latency_s": 2.180044,
+      "tool_latency_s": 0.0352,
+      "iteration_latency_s": 2.215244
+    },
+    {
+      "run_index": 0,
+      "iteration": 2,
+      "model_latency_s": 3.362226,
+      "tool_latency_s": 0.029083,
+      "iteration_latency_s": 3.391309
+    },
+    {
+      "run_index": 0,
+      "iteration": 3,
+      "model_latency_s": 6.489581,
+      "tool_latency_s": 0.007777,
+      "iteration_latency_s": 6.497358
+    },
+    {
+      "run_index": 0,
+      "iteration": 4,
+      "model_latency_s": 2.276439,
+      "tool_latency_s": 0.022803,
+      "iteration_latency_s": 2.299242
+    },
+    {
+      "run_index": 0,
+      "iteration": 5,
+      "model_latency_s": 2.699139,
+      "tool_latency_s": 0.009929,
+      "iteration_latency_s": 2.709068
+    },
+    {
+      "run_index": 0,
+      "iteration": 6,
+      "model_latency_s": 2.018303,
+      "tool_latency_s": 0.007025,
+      "iteration_latency_s": 2.025328
+    },
+    {
+      "run_index": 0,
+      "iteration": 7,
+      "model_latency_s": 2.655235,
+      "tool_latency_s": 6e-05,
+      "iteration_latency_s": 2.655295
+    },
+    {
+      "run_index": 0,
+      "iteration": 8,
+      "model_latency_s": 6.757841,
+      "tool_latency_s": 0.006138,
+      "iteration_latency_s": 6.763979
+    },
+    {
+      "run_index": 0,
+      "iteration": 9,
+      "model_latency_s": 1.320327,
+      "tool_latency_s": 0.008911,
+      "iteration_latency_s": 1.329238
+    },
+    {
+      "run_index": 0,
+      "iteration": 10,
+      "model_latency_s": 1.775371,
+      "tool_latency_s": 0.006709,
+      "iteration_latency_s": 1.78208
+    },
+    {
+      "run_index": 0,
+      "iteration": 11,
+      "model_latency_s": 2.713558,
+      "tool_latency_s": 0.017668,
+      "iteration_latency_s": 2.731226
+    },
+    {
+      "run_index": 0,
+      "iteration": 12,
+      "model_latency_s": 1.051693,
+      "tool_latency_s": 0.007134,
+      "iteration_latency_s": 1.058827
+    },
+    {
+      "run_index": 0,
+      "iteration": 13,
+      "model_latency_s": 1.725494,
+      "tool_latency_s": 0.009279,
+      "iteration_latency_s": 1.734773
+    },
+    {
+      "run_index": 0,
+      "iteration": 14,
+      "model_latency_s": 2.966253,
+      "tool_latency_s": 0.008222,
+      "iteration_latency_s": 2.974475
+    },
+    {
+      "run_index": 0,
+      "iteration": 15,
+      "model_latency_s": 3.334122,
+      "tool_latency_s": 1.2803,
+      "iteration_latency_s": 4.614422
+    },
+    {
+      "run_index": 0,
+      "iteration": 16,
+      "model_latency_s": 6.286602,
+      "tool_latency_s": 0.006154,
+      "iteration_latency_s": 6.292756
+    },
+    {
+      "run_index": 0,
+      "iteration": 17,
+      "model_latency_s": 1.410764,
+      "tool_latency_s": 0.013288,
+      "iteration_latency_s": 1.424052
+    },
+    {
+      "run_index": 0,
+      "iteration": 18,
+      "model_latency_s": 8.422842,
+      "tool_latency_s": 0.006245,
+      "iteration_latency_s": 8.429087
+    },
+    {
+      "run_index": 0,
+      "iteration": 19,
+      "model_latency_s": 3.175092,
+      "tool_latency_s": 0.018281,
+      "iteration_latency_s": 3.193373
+    },
+    {
+      "run_index": 0,
+      "iteration": 20,
+      "model_latency_s": 2.26137,
+      "tool_latency_s": 0.006217,
+      "iteration_latency_s": 2.267587
+    },
+    {
+      "run_index": 0,
+      "iteration": 21,
+      "model_latency_s": 2.193261,
+      "tool_latency_s": 0.008287,
+      "iteration_latency_s": 2.201548
+    },
+    {
+      "run_index": 0,
+      "iteration": 22,
+      "model_latency_s": 3.166775,
+      "tool_latency_s": 1.272558,
+      "iteration_latency_s": 4.439333
+    }
+  ],
+  "per_tool_latency_s": [
+    {
+      "run_index": 0,
+      "iteration": 1,
+      "tool": "tool_get_database_catalog",
+      "latency_s": 0.01402
+    },
+    {
+      "run_index": 0,
+      "iteration": 1,
+      "tool": "tool_get_database_catalog",
+      "latency_s": 0.008987
+    },
+    {
+      "run_index": 0,
+      "iteration": 1,
+      "tool": "tool_get_database_catalog",
+      "latency_s": 0.012193
+    },
+    {
+      "run_index": 0,
+      "iteration": 2,
+      "tool": "tool_get_table_schema",
+      "latency_s": 0.009017
+    },
+    {
+      "run_index": 0,
+      "iteration": 2,
+      "tool": "tool_get_table_schema",
+      "latency_s": 0.011667
+    },
+    {
+      "run_index": 0,
+      "iteration": 2,
+      "tool": "tool_get_table_schema",
+      "latency_s": 0.008399
+    },
+    {
+      "run_index": 0,
+      "iteration": 3,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.007777
+    },
+    {
+      "run_index": 0,
+      "iteration": 4,
+      "tool": "tool_execute_query_step",
+      "latency_s": 0.022803
+    },
+    {
+      "run_index": 0,
+      "iteration": 5,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.009929
+    },
+    {
+      "run_index": 0,
+      "iteration": 6,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.007025
+    },
+    {
+      "run_index": 0,
+      "iteration": 7,
+      "tool": "tool_validate_sql",
+      "latency_s": 6e-05
+    },
+    {
+      "run_index": 0,
+      "iteration": 8,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.006138
+    },
+    {
+      "run_index": 0,
+      "iteration": 9,
+      "tool": "tool_get_table_schema",
+      "latency_s": 0.008911
+    },
+    {
+      "run_index": 0,
+      "iteration": 10,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.006709
+    },
+    {
+      "run_index": 0,
+      "iteration": 11,
+      "tool": "tool_execute_query_step",
+      "latency_s": 0.017668
+    },
+    {
+      "run_index": 0,
+      "iteration": 12,
+      "tool": "tool_get_database_catalog",
+      "latency_s": 0.007134
+    },
+    {
+      "run_index": 0,
+      "iteration": 13,
+      "tool": "tool_get_table_schema",
+      "latency_s": 0.009279
+    },
+    {
+      "run_index": 0,
+      "iteration": 14,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.008222
+    },
+    {
+      "run_index": 0,
+      "iteration": 15,
+      "tool": "tool_execute_query_step",
+      "latency_s": 1.2803
+    },
+    {
+      "run_index": 0,
+      "iteration": 16,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.006154
+    },
+    {
+      "run_index": 0,
+      "iteration": 17,
+      "tool": "tool_get_table_schema",
+      "latency_s": 0.013288
+    },
+    {
+      "run_index": 0,
+      "iteration": 18,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.006245
+    },
+    {
+      "run_index": 0,
+      "iteration": 19,
+      "tool": "tool_execute_query_step",
+      "latency_s": 0.018281
+    },
+    {
+      "run_index": 0,
+      "iteration": 20,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.006217
+    },
+    {
+      "run_index": 0,
+      "iteration": 21,
+      "tool": "tool_validate_sql",
+      "latency_s": 0.008287
+    },
+    {
+      "run_index": 0,
+      "iteration": 22,
+      "tool": "tool_execute_query_step",
+      "latency_s": 1.272558
+    }
+  ],
+  "latency_summary": {
+    "total_model_latency_s": 70.242332,
+    "total_tool_latency_s": 2.787268,
+    "total_iteration_latency_s": 73.0296,
+    "max_iteration_latency_s": 8.429087,
+    "max_tool_latency_s": 1.2803
+  },
+  "terminal_context": {
+    "has_errors": true,
+    "terminal_error": "Step 2 (query) validated=True executed=True rows_returned=0 status=empty",
+    "last_completed_iteration": 22,
+    "last_ai_content": "",
+    "last_tool_call_count": 1,
+    "last_tool": {
+      "tool": "tool_execute_query_step",
+      "args": {
+        "run_id": "47d44202e11e4eee999519efbd34d365",
+        "step": {
+          "step": 2,
+          "action": "query",
+          "database": "stormflohavniva",
+          "sql": "SELECT omrade AS geom FROM stormflohavniva_bd7c84ed67254396b81e18b48ee0f525.stormflo200ar_klimaarna WHERE ST_Intersects(omrade, ST_GeomFromText('POLYGON((430000 6430000, 430000 6480000, 480000 6480000, 480000 6430000, 430000 6430000))', 25833));",
+          "schema_name": "stormflohavniva_bd7c84ed67254396b81e18b48ee0f525",
+          "table_name": "stormflo200ar_klimaarna"
+        }
+      },
+      "result": "{\"executed\": true, \"run_id\": \"47d44202e11e4eee999519efbd34d365\", \"step\": 2, \"action\": \"query\", \"row_count\": 0, \"rows_returned\": 0, \"columns\": [], \"sample_rows\": [], \"result_truncated_for_model\": false}"
+    },
+    "recent_iterations": [
+      {
+        "iteration": 20,
+        "ai_content": "",
+        "tool_calls_declared": 1,
+        "tool_names": [
+          "tool_validate_sql"
+        ],
+        "iteration_error": "{\"validated\": false, \"step_number\": 2, \"database\": \"stormflohavniva\", \"error\": \"relation \\\"step_1\\\" does not exist\"}",
+        "failed_step": 2,
+        "had_error": true,
+        "had_validation_error": true,
+        "had_exec_success": false,
+        "last_tool": {
+          "tool": "tool_validate_sql",
+          "args": {
+            "sql": "SELECT omrade AS geom FROM stormflohavniva_bd7c84ed67254396b81e18b48ee0f525.stormflo200ar_klimaarna WHERE ST_Intersects(omrade, (SELECT geom FROM step_1));",
+            "databaseName": "stormflohavniva",
+            "step_number": 2
+          },
+          "result": "{\"validated\": false, \"step_number\": 2, \"database\": \"stormflohavniva\", \"error\": \"relation \\\"step_1\\\" does not exist\"}"
+        }
+      },
+      {
+        "iteration": 21,
+        "ai_content": "",
+        "tool_calls_declared": 1,
+        "tool_names": [
+          "tool_validate_sql"
+        ],
+        "iteration_error": null,
+        "failed_step": 2,
+        "had_error": false,
+        "had_validation_error": false,
+        "had_exec_success": false,
+        "last_tool": {
+          "tool": "tool_validate_sql",
+          "args": {
+            "sql": "SELECT omrade AS geom FROM stormflohavniva_bd7c84ed67254396b81e18b48ee0f525.stormflo200ar_klimaarna WHERE ST_Intersects(omrade, ST_GeomFromText('POLYGON((430000 6430000, 430000 6480000, 480000 6480000, 480000 6430000, 430000 6430000))', 25833));",
+            "databaseName": "stormflohavniva",
+            "step_number": 2
+          },
+          "result": "{\"validated\": true, \"step_number\": 2, \"database\": \"stormflohavniva\"}"
+        }
+      },
+      {
+        "iteration": 22,
+        "ai_content": "",
+        "tool_calls_declared": 1,
+        "tool_names": [
+          "tool_execute_query_step"
+        ],
+        "iteration_error": null,
+        "failed_step": null,
+        "had_error": false,
+        "had_validation_error": false,
+        "had_exec_success": true,
+        "last_tool": {
+          "tool": "tool_execute_query_step",
+          "args": {
+            "run_id": "47d44202e11e4eee999519efbd34d365",
+            "step": {
+              "step": 2,
+              "action": "query",
+              "database": "stormflohavniva",
+              "sql": "SELECT omrade AS geom FROM stormflohavniva_bd7c84ed67254396b81e18b48ee0f525.stormflo200ar_klimaarna WHERE ST_Intersects(omrade, ST_GeomFromText('POLYGON((430000 6430000, 430000 6480000, 480000 6480000, 480000 6430000, 430000 6430000))', 25833));",
+              "schema_name": "stormflohavniva_bd7c84ed67254396b81e18b48ee0f525",
+              "table_name": "stormflo200ar_klimaarna"
+            }
+          },
+          "result": "{\"executed\": true, \"run_id\": \"47d44202e11e4eee999519efbd34d365\", \"step\": 2, \"action\": \"query\", \"row_count\": 0, \"rows_returned\": 0, \"columns\": [], \"sample_rows\": [], \"result_truncated_for_model\": false}"
+        }
+      }
+    ]
+  },
+  "final": {
+    "answer": "",
+    "answer_missing": true,
+    "sql": "-- STEP 1: query [kommuner]\nSELECT kommunenummer, kommunenavn, omrade AS geom FROM kommuner_627ee106072240e99d2b21ec4717bf01.kommune WHERE kommunenummer = '4204';\n\n-- STEP BOUNDARY --\n\n-- STEP 2: query [stormflohavniva]\nSELECT omrade AS geom FROM stormflohavniva_bd7c84ed67254396b81e18b48ee0f525.stormflo200ar_klimaarna WHERE ST_Intersects(omrade, ST_GeomFromText('POLYGON((430000 6430000, 430000 6480000, 480000 6480000, 480000 6430000, 430000 6430000))', 25833));",
+    "result_data": null
+  }
+}
