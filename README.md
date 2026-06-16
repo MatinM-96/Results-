@@ -1,8 +1,8 @@
 # GIS Evaluation Results
 
-This repository contains raw evaluation outputs for a PhD study on language-model use in GIS workflows. The files are kept close to the original execution format so that individual runs can be inspected, counted, and re-analysed without relying only on summary tables.
+This repository contains raw evaluation outputs from a doctoral study on language-model support for GIS workflows. The files are preserved close to their original execution format so that individual runs can be inspected, counted, and re-analysed without relying only on summary tables.
 
-The repository is intended as a result archive, not as a polished software package. It contains prompts, query descriptions, configuration files, model outputs, logs, latency values, token estimates, SQL validation fields, and task-completion indicators.
+The repository is intended as a result archive, not as a polished software package. It contains prompts, query descriptions, configuration files, model outputs, execution logs, latency values, token estimates, SQL validation fields, tool-use information, and task-completion indicators.
 
 ## Repository Structure
 
@@ -17,6 +17,7 @@ llm-gis-evaluation-results/
       prompt_v3/
       prompt_v4/
       prompt_v5/
+
   statistical_repeated_runs/
     index.json
     <query_hash>/
@@ -28,7 +29,7 @@ llm-gis-evaluation-results/
 
 ### Prompt Comparison Evaluation
 
-`prompt_comparison_evaluation/` contains runs used to compare five prompt formulations across benchmark GIS queries. The index file records 30 query entries and 6,991 runs.
+`prompt_comparison_evaluation/` contains runs used to compare five prompt formulations across the GIS benchmark tasks. The index file records 30 query entries and 6,991 runs.
 
 The prompt variants are stored as:
 
@@ -40,17 +41,17 @@ prompt_v4
 prompt_v5
 ```
 
-Each query folder is named by a stable query hash. The associated `query.json` file gives the query identifier, hash, and natural-language task description.
+Each query folder is named by a stable query hash. The associated `query.json` file contains the query identifier, query hash, and natural-language GIS task description.
 
 ### Statistical Repeated Runs
 
-`statistical_repeated_runs/` contains repeated executions used to study variability across runs. This part uses `prompt_v5` and includes 31 query entries. The index file records 11,365 runs.
+`statistical_repeated_runs/` contains repeated executions used to analyse run-to-run variability under the final prompt setting. This experiment set uses `prompt_v5` and includes 31 query entries. The index file records 11,365 runs.
 
-These repeated runs are useful for estimating stability, failure modes, and run-to-run differences for the same task and prompt setting.
+These repeated runs are used to estimate stability, model-level uncertainty, task-level variation, failure modes, and differences between repeated executions of the same task and prompt setting.
 
 ## File Conventions
 
-`index.json` gives a compact overview of the experiment set. Each entry contains the query identifier, query hash, query text, first recorded run time, total run count, and a breakdown by model and prompt configuration.
+`index.json` gives a compact overview of each experiment set. Each entry contains the query identifier, query hash, query text, first recorded run time, total run count, and a breakdown by model and prompt configuration.
 
 `query.json` stores the benchmark task for a single query.
 
@@ -84,10 +85,10 @@ qwen3-coder-30b-vllm
 
 ## Notes for Analysis
 
-The files should be treated as raw experimental records. Some runs may contain errors, incomplete outputs, retries, repaired SQL, or failed validation. These cases are part of the empirical material and should not be removed without a documented exclusion rule.
+The files should be treated as raw experimental records. Some runs contain incomplete outputs, errors, retries, repaired SQL, failed validation, or failed task completion. These cases are part of the empirical material and should not be removed unless a documented exclusion rule is applied.
 
-When reporting results from this repository, include the experiment set, query identifier or query hash, prompt version, model identifier, and the commit hash of this repository. This makes later comparison and replication easier.
+When reporting results from this repository, include the experiment set, query identifier or query hash, prompt version, model identifier, and repository commit hash. This makes later comparison and replication easier.
 
 ## Suggested Citation Text
 
-This repository contains raw outputs from GIS benchmark experiments conducted as part of PhD research on language-model support for geospatial analysis tasks. The archive includes prompt-comparison runs, repeated-run experiments, model outputs, execution logs, and evaluation metadata.
+This repository contains raw outputs from GIS benchmark experiments conducted as part of doctoral research on language-model support for geospatial analysis tasks. The archive includes prompt-comparison runs, repeated-run experiments, model outputs, execution logs, and evaluation metadata.
